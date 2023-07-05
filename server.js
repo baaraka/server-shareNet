@@ -3,9 +3,15 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 import authRoute from "./routes/auth.js";
 import userRoute from "./routes/users.js";
 import shareRoute from "./routes/shares.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 dotenv.config();
@@ -13,6 +19,7 @@ dotenv.config();
 // middleware
 app.use(cors());
 app.use(express.json());
+app.use("/images", express.static(path.join(__dirname, "/images")));
 
 //mongodb connection
 const connect = async () => {
@@ -36,7 +43,7 @@ const storage = multer.diskStorage({
 
 //create uploads middleware
 const upload = multer({ storage: storage });
-app.post("api/upload", upload.single("file"), (req, res) => {
+app.post("/api/upload", upload.single("file"), (req, res) => {
   res.status(200).json("File has been uploaded");
 });
 
